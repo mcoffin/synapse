@@ -1,6 +1,6 @@
 require 'synapse/service_watcher/base'
 require 'json'
-require 'net/http'
+require 'net/https'
 require 'resolv'
 
 class Synapse::ServiceWatcher
@@ -38,6 +38,8 @@ class Synapse::ServiceWatcher
 
       begin
         @connection = Net::HTTP.new(@marathon_api.host, @marathon_api.port)
+	@connection.use_ssl = @marathon_api.scheme == 'https'
+	@connection.verify_mode = OpenSSL::SSL::VERIFY_NONE
         @connection.open_timeout = 5
         @connection.start
       rescue => ex
